@@ -24,6 +24,7 @@ from mkdocs_autorefs.plugin import AutorefsPlugin
 
 from mkdocstrings.extension import MkdocstringsExtension
 from mkdocstrings.handlers.base import BaseHandler, Handlers
+from mkdocstrings.inventory import get_inventory
 from mkdocstrings.loggers import get_logger
 
 log = get_logger(__name__)
@@ -175,6 +176,7 @@ class MkdocstringsPlugin(BasePlugin):
             log.debug(f"Added a subdued autorefs instance {autorefs!r}")
         # Add collector-based fallback in either case.
         autorefs.get_fallback_anchor = self._handlers.get_anchor
+        self._autorefs = autorefs
 
         mkdocstrings_extension = MkdocstringsExtension(extension_config, self._handlers, autorefs)
         config["markdown_extensions"].append(mkdocstrings_extension)
@@ -205,6 +207,9 @@ class MkdocstringsPlugin(BasePlugin):
 
             log.debug("Tearing handlers down")
             self._handlers.teardown()
+
+            inv_contents = get_inventory(self._autorefs)
+            write_file(inv_contents, os.path.join(config["site_dir"], "objects.inv"))
 
     def get_handler(self, handler_name: str) -> BaseHandler:
         """Get a handler by its name. See [mkdocstrings.handlers.base.Handlers.get_handler][].
