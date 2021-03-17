@@ -7,7 +7,8 @@ def get_inventory(autorefs, project="project", version="0.0.0"):
     inv.version = version
 
     for anchor, url in autorefs._url_map.items():
-        o = soi.DataObjStr(name=anchor, domain="py", uri=url, role="", priority="", dispname="")
+        url = url.replace(anchor, "$")
+        o = soi.DataObjStr(name=anchor, domain="py", uri=url, role="obj", priority="1", dispname="-")
         inv.objects.append(o)
 
     df = inv.data_file()
