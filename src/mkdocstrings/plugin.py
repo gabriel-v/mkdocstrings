@@ -208,7 +208,7 @@ class MkdocstringsPlugin(BasePlugin):
             log.debug("Tearing handlers down")
             self._handlers.teardown()
 
-            inv_contents = get_inventory(self._autorefs)
+            inv_contents = get_inventory(self._autorefs._url_map)
             write_file(inv_contents, os.path.join(config["site_dir"], "objects.inv"))
 
     def get_handler(self, handler_name: str) -> BaseHandler:

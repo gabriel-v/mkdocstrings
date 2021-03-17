@@ -315,6 +315,13 @@ def test(ctx, cleancov: bool = True, match: str = ""):
     """
     if cleancov:
         ctx.run("rm -f .coverage", silent=True)
+
+    try:
+        import sphinx  # isort:skip
+        import docutils  # isort:skip
+    except ImportError:
+        ctx.run("pip install sphinx docutils --no-deps", title="Installing additional test dependencies")
+
     ctx.run(
         ["pytest", "-c", "config/pytest.ini", "-n", "auto", "-k", match, "tests"],
         title="Running tests",
